@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f2ed">
+  <meta name="description" content="输入房价、租金和利率，比较租房与买房的期末资产。">
+  <title>租房还是买房？资产对比计算器</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="masthead">
+      <a class="brand" href="#top" aria-label="租买账回到首页"><span class="brand-mark" aria-hidden="true">账</span><span>租买账</span></a>
+      <span class="masthead-note"><span class="status-dot"></span> 本地计算 · 数据不会上传</span>
+    </header>
+
+    <section class="intro" id="top" aria-labelledby="page-title">
+      <p class="eyebrow">RENT OR BUY · ASSET CALCULATOR</p>
+      <h1 id="page-title">租房还是买房？<br><span>把十年后的账算清楚。</span></h1>
+      <p class="intro-copy">调整房价、租金和利率，看看在同样起始资金下，两种选择会留下多少资产。</p>
+    </section>
+
+    <section class="calculator-layout" aria-label="租买资产计算器">
+      <form class="input-card" id="assumptions-form" novalidate>
+        <div class="card-heading"><div><p class="section-kicker">01 / 假设条件</p><h2>填写你的参数</h2></div><button type="button" class="reset-button" id="reset-button">恢复示例</button></div>
+
+        <fieldset class="field-group">
+          <legend><span class="legend-index">A</span> 房屋与租金</legend>
+          <label class="field" for="homePrice"><span>房屋总价</span><span class="input-wrap"><input id="homePrice" name="homePrice" type="number" min="1" step="10000" value="4990000" inputmode="decimal"><span>元</span></span></label>
+          <label class="field" for="homeArea"><span>建筑面积</span><span class="input-wrap"><input id="homeArea" name="homeArea" type="number" min="1" step="1" value="70" inputmode="decimal"><span>㎡</span></span></label>
+          <label class="field" for="householdHomeCount"><span>家庭住房套数</span><span class="input-wrap"><select id="householdHomeCount" name="householdHomeCount"><option value="sole" selected>家庭唯一住房</option><option value="second">家庭第二套住房</option></select></span></label>
+          <label class="field" for="monthlyRent"><span>每月租金</span><span class="input-wrap"><input id="monthlyRent" name="monthlyRent" type="number" min="0" step="100" value="6500" inputmode="decimal"><span>元 / 月</span></span></label>
+          <label class="field" for="annualHomePriceChange"><span>房价年涨跌幅</span><span class="input-wrap"><input id="annualHomePriceChange" name="annualHomePriceChange" type="number" min="-99.99" step="0.1" value="0" inputmode="decimal"><span>% / 年</span></span></label>
+        </fieldset>
+
+        <fieldset class="field-group">
+          <legend><span class="legend-index">B</span> 首付与贷款</legend>
+          <label class="field" for="downPayment"><span>首付</span><span class="input-wrap"><input id="downPayment" name="downPayment" type="number" min="0" step="10000" value="2000000" inputmode="decimal"><span>元</span></span></label>
+          <div class="field-pair">
+            <label class="field" for="deedTaxRate"><span>契税税率</span><span class="input-wrap"><input id="deedTaxRate" name="deedTaxRate" type="number" min="0" max="5" step="0.1" value="1" inputmode="decimal"><span>%</span></span></label>
+            <label class="field" for="brokerFeeRate"><span>买方中介费率</span><span class="input-wrap"><input id="brokerFeeRate" name="brokerFeeRate" type="number" min="0" max="10" step="0.1" value="2" inputmode="decimal"><span>%</span></span></label>
+          </div>
+          <label class="field" for="otherPurchaseCosts"><span>其他购房费用</span><span class="input-wrap"><input id="otherPurchaseCosts" name="otherPurchaseCosts" type="number" min="0" step="1000" value="0" inputmode="decimal"><span>元</span></span></label>
+          <p class="field-hint">契税按北京现行面积和家庭套数规则预填，并以房价估算计税基数；中介费率按 2% 估算。实际税基和中介费以当地规则及成交协商为准，可调整税率和其他费用。</p>
+          <div class="field-pair">
+            <label class="field" for="mortgageAnnualRate"><span>贷款年利率</span><span class="input-wrap"><input id="mortgageAnnualRate" name="mortgageAnnualRate" type="number" min="0" step="0.01" value="3.05" inputmode="decimal"><span>%</span></span></label>
+            <label class="field" for="mortgageTermYears"><span>贷款年限</span><span class="input-wrap"><input id="mortgageTermYears" name="mortgageTermYears" type="number" min="1" max="50" step="1" value="30" inputmode="numeric"><span>年</span></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field-group field-group-last">
+          <legend><span class="legend-index">C</span> 投资与比较周期</legend>
+          <label class="field" for="investmentAnnualRate"><span>投资年化收益率</span><span class="input-wrap"><input id="investmentAnnualRate" name="investmentAnnualRate" type="number" min="-100" step="0.1" value="3" inputmode="decimal"><span>% / 年</span></span></label>
+          <label class="field" for="comparisonYears"><span>比较时间</span><span class="input-wrap"><input id="comparisonYears" name="comparisonYears" type="number" min="1" max="30" step="1" value="10" inputmode="numeric"><span>年</span></span></label>
+          <p class="field-hint" id="term-hint">比较时间不能超过贷款年限。</p>
+        </fieldset>
+
+        <div class="error-message" id="error-message" role="alert" aria-live="polite" hidden></div>
+        <p class="input-footnote">所有金额按人民币计算。改变任一参数，结果会立即更新。</p>
+      </form>
+
+      <section class="results-column" aria-labelledby="results-title" aria-live="polite">
+        <div class="result-topline"><div><p class="section-kicker">02 / 计算结果</p><h2 id="results-title">期末资产对比</h2></div><span class="period-badge" id="period-badge">10 年后</span></div>
+        <div class="difference-card" id="difference-card"><span class="difference-label" id="difference-label">买房方案领先</span><strong class="difference-value" id="asset-difference">¥0</strong><span class="difference-caption">两种方案的期末资产差额</span><div class="difference-bar" aria-hidden="true"><span id="difference-bar-fill"></span></div></div>
+
+        <div class="outcome-grid">
+          <article class="outcome-card buyer-card"><div class="outcome-heading"><span class="outcome-icon" aria-hidden="true">⌂</span><span>买房</span></div><strong class="outcome-value" id="buyer-assets">¥0</strong><span class="outcome-caption">房屋净资产</span><dl class="mini-stats"><div><dt>期末房屋估值</dt><dd id="home-value">¥0</dd></div><div><dt>剩余贷款</dt><dd id="remaining-loan">¥0</dd></div></dl></article>
+          <article class="outcome-card renter-card"><div class="outcome-heading"><span class="outcome-icon" aria-hidden="true">↗</span><span>租房</span></div><strong class="outcome-value" id="renter-assets">¥0</strong><span class="outcome-caption">投资账户余额</span><dl class="mini-stats"><div><dt>初始投资本金</dt><dd id="initial-investment">¥0</dd></div><div><dt>每月投资差额</dt><dd id="monthly-difference">¥0</dd></div></dl></article>
+        </div>
+
+        <article class="details-card"><div class="details-heading"><h3>每月现金流与贷款</h3><span>按当前假设</span></div><dl class="detail-list"><div><dt>每月房贷月供</dt><dd id="monthly-payment">¥0</dd></div><div><dt>每月房租</dt><dd id="monthly-rent-result">¥0</dd></div><div><dt>首月归还本金</dt><dd id="first-month-principal">¥0</dd></div><div><dt>首月支付利息</dt><dd id="first-month-interest">¥0</dd></div><div><dt><span id="period-years">10</span> 年累计贷款利息</dt><dd id="total-interest">¥0</dd></div><div><dt>契税估算</dt><dd id="deed-tax-result">¥0</dd></div><div><dt>中介费估算</dt><dd id="broker-fee-result">¥0</dd></div><div><dt>其他购房费用</dt><dd id="other-cost-result">¥0</dd></div><div><dt>购房费用合计</dt><dd id="purchase-cost-result">¥0</dd></div></dl></article>
+
+        <details class="process-card" id="calculation-process">
+          <summary><span class="process-summary-copy"><span class="section-kicker">03 / 计算明细</span><strong>查看完整计算过程</strong></span><span class="process-summary-note">公式与本次参数代入值</span></summary>
+          <div class="process-content">
+            <section class="process-step"><div class="process-step-heading"><span>01</span><h3>贷款本金与月供</h3></div><div class="equation-row"><span>贷款本金 = 房价 − 首付</span><strong id="calc-loan-principal">—</strong></div><div class="equation-row"><span>月利率 / 总期数</span><strong id="calc-loan-terms">—</strong></div><div class="equation-box"><span>等额本息月供公式</span><code id="calc-payment-formula">—</code></div><div class="equation-row equation-result"><span>每月月供</span><strong id="calc-monthly-payment">—</strong></div></section>
+            <section class="process-step"><div class="process-step-heading"><span>02</span><h3>首月还款拆分</h3></div><div class="equation-row"><span>首月利息 = 贷款本金 × 月利率</span><strong id="calc-first-interest">—</strong></div><div class="equation-row"><span>首月本金 = 月供 − 首月利息</span><strong id="calc-first-principal">—</strong></div></section>
+            <section class="process-step"><div class="process-step-heading"><span>03</span><h3><span id="calc-period-label">—</span>年还款与贷款余额</h3></div><div class="equation-row"><span>累计月供 = 月供 × 比较月数</span><strong id="calc-total-payments">—</strong></div><div class="equation-row"><span>累计归还本金 = 贷款本金 − 剩余贷款</span><strong id="calc-principal-repaid">—</strong></div><div class="equation-row"><span>累计支付利息</span><strong id="calc-total-interest">—</strong></div><div class="equation-row"><span>期末剩余贷款</span><strong id="calc-remaining-loan">—</strong></div></section>
+            <section class="process-step"><div class="process-step-heading"><span>04</span><h3>房屋估值与买房资产</h3></div><div class="equation-box"><span>期末房屋估值 = 房价 × (1 + 年涨跌幅)<sup>比较年数</sup></span><code id="calc-home-value-formula">—</code></div><div class="equation-row equation-result"><span>买房期末净资产 = 房屋估值 − 剩余贷款</span><strong id="calc-buyer-assets">—</strong></div></section>
+            <section class="process-step"><div class="process-step-heading"><span>05</span><h3>购房费用估算</h3></div><div class="equation-row"><span>契税 = 房价 × 契税率</span><strong id="calc-deed-tax">—</strong></div><div class="equation-row"><span>中介费 = 房价 × 中介费率</span><strong id="calc-broker-fee">—</strong></div><div class="equation-row"><span>其他购房费用</span><strong id="calc-other-costs">—</strong></div><div class="equation-row equation-result"><span>购房费用合计</span><strong id="calc-purchase-costs">—</strong></div></section>
+            <section class="process-step"><div class="process-step-heading"><span>06</span><h3>租房投资账户</h3></div><div class="equation-row"><span>初始本金 = 首付 + 购房费用</span><strong id="calc-initial-investment">—</strong></div><div class="equation-row"><span>每月投入 = 月供 − 月租</span><strong id="calc-monthly-contribution">—</strong></div><div class="equation-box"><span>期末投资 = 初始本金复利 + 每月月末投入复利</span><code id="calc-renter-formula">—</code></div><div class="equation-row"><span>初始本金复利到期末</span><strong id="calc-initial-growth">—</strong></div><div class="equation-row"><span>每月投入复利到期末</span><strong id="calc-contribution-growth">—</strong></div><div class="equation-row equation-result"><span>租房期末投资资产</span><strong id="calc-renter-assets">—</strong></div></section>
+            <div class="process-conclusion"><span>期末资产差额</span><strong id="calc-asset-difference">—</strong></div><p class="formula-note">月投资收益率按年化收益率 ÷ 12 计算。每月投入在月末计入。房租保持不变。模型未计房屋持有成本和出售费用。</p>
+          </div>
+        </details>
+        <p class="disclaimer">这是基于你输入假设的名义金额估算，不预测未来。当前不计租金上涨、房屋持有成本、出售费用、通胀和投资税费。</p>
+      </section>
+    </section>
+    <footer class="page-footer"><span>租买账</span><span>算清假设，再做选择。</span></footer>
+  </main>
+  <script src="./calculator.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
